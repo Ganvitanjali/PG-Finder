@@ -2,20 +2,21 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const InquiryForm = () => {
-  const [properties, setProperties] = useState([]); // ✅ Initialize as empty array
+  const [properties, setProperties] = useState([]);
   const [formData, setFormData] = useState({
-    name: "",
+    userName: "",
     email: "",
     phone: "",
     message: "",
     propertyId: "",
+    inquiryDate: new Date().toISOString().slice(0, 10), // current date
   });
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         const response = await axios.get("http://localhost:3000/property/getAllproperties");
-        setProperties(response.data.data); // Make sure your API returns data.data
+        setProperties(response.data.data);
       } catch (error) {
         console.error("Error fetching properties:", error);
       }
@@ -26,8 +27,8 @@ const InquiryForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value,
     }));
   };
@@ -37,13 +38,13 @@ const InquiryForm = () => {
     try {
       await axios.post("http://localhost:3000/inquiry/add", formData);
       alert("Inquiry submitted successfully!");
-      // Reset the form
       setFormData({
-        name: "",
+        userName: "",
         email: "",
         phone: "",
         message: "",
         propertyId: "",
+        inquiryDate: new Date().toISOString().slice(0, 10),
       });
     } catch (error) {
       console.error("Error submitting inquiry:", error);
@@ -52,65 +53,72 @@ const InquiryForm = () => {
   };
 
   return (
-    <div className="inquiry-form-container">
-      <h2>Inquiry Form</h2>
+    <div style={{ maxWidth: "500px", margin: "auto", padding: "20px", border: "1px solid #ccc", borderRadius: "8px", backgroundColor: "#f9f9f9" }}>
+      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Inquiry Form</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Full Name:</label>
+        <div style={{ marginBottom: "15px" }}>
+          <label style={{ display: "block", marginBottom: "5px" }}>User Name:</label>
           <input
             type="text"
-            name="name"
-            value={formData.name}
+            name="userName"
+            value={formData.userName}
             onChange={handleChange}
             required
+            style={{ width: "100%", padding: "8px" }}
           />
         </div>
-        <div>
-          <label>Email Address:</label>
+        <div style={{ marginBottom: "15px" }}>
+          <label style={{ display: "block", marginBottom: "5px" }}>Email Address:</label>
           <input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             required
+            style={{ width: "100%", padding: "8px" }}
           />
         </div>
-        <div>
-          <label>Phone Number:</label>
+        <div style={{ marginBottom: "15px" }}>
+          <label style={{ display: "block", marginBottom: "5px" }}>Phone Number:</label>
           <input
-            type="tel"
+            type="text"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
             required
+            style={{ width: "100%", padding: "8px" }}
           />
         </div>
-        <div>
-          <label>Select Property:</label>
+        <div style={{ marginBottom: "15px" }}>
+          <label style={{ display: "block", marginBottom: "5px" }}>Select Property:</label>
           <select
             name="propertyId"
             value={formData.propertyId}
             onChange={handleChange}
             required
+            style={{ width: "100%", padding: "8px" }}
           >
-            <option value="">-- Select a Property --</option>
-            {properties?.map((property) => (
+            <option value="">-- Select Property --</option>
+            {properties.map((property) => (
               <option key={property._id} value={property._id}>
-                {property.title}
+                {property.propertyName}
               </option>
             ))}
           </select>
         </div>
-        <div>
-          <label>Message:</label>
+        <div style={{ marginBottom: "15px" }}>
+          <label style={{ display: "block", marginBottom: "5px" }}>Message:</label>
           <textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
             required
+            style={{ width: "100%", padding: "8px" }}
           />
         </div>
-        <button type="submit">Submit Inquiry</button>
+        <button type="submit" style={{ width: "100%", padding: "10px", backgroundColor: "#4CAF50", color: "#fff", border: "none", borderRadius: "4px" }}>
+          Submit Inquiry
+        </button>
       </form>
     </div>
   );
