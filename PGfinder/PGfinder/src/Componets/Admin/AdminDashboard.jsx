@@ -37,39 +37,39 @@ const AdminDashboard = () => {
   };
 
   const headingStyle = {
-    fontSize: "28px", // thoda chhota kar diya
+    fontSize: "28px", 
     fontWeight: "bold",
     marginBottom: "24px",
   };
 
   const gridStyle = {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", // box size chhota kar diya
+    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", 
     gap: "16px",
-    justifyContent: "center", // center mein la diya
+    justifyContent: "center", 
   };
 
   const cardStyle = {
     backgroundColor: "#ffffff",
-    borderRadius: "12px", // thoda chhota radius
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", // light shadow
-    padding: "16px", // kam padding
+    borderRadius: "12px", 
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", 
+    padding: "16px", 
     textAlign: "center",
-    minHeight: "120px", // chhota box height
+    minHeight: "120px", 
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
   };
 
   const cardTitleStyle = {
-    fontSize: "16px", // thoda chhota font
+    fontSize: "16px", 
     fontWeight: "600",
     color: "#374151",
     marginBottom: "4px",
   };
 
   const cardValueStyle = (color) => ({
-    fontSize: "22px", // thoda chhota value font
+    fontSize: "22px", 
     fontWeight: "bold",
     color: color,
   });
