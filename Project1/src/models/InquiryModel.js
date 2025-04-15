@@ -2,29 +2,40 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const inquirySchema = new Schema({
-    propertyId:{
-        type:Schema.Types.ObjectId,
-        ref:"Property"
+    propertyId: {
+        type: Schema.Types.ObjectId,
+        ref: "Property",
+        required: true
     },
-    userId:{
-        type:Schema.Types.ObjectId,
-        ref:"users"
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: "users",
+        required: true
     },
-    message:{
-        type:String
+    message: {
+        type: String,
+        required: true
     },
-    inquiryDate:{
-        type:Date
+    inquiryDate: {
+        type: Date,
+        required: true
     },
-    status:{
-        type:String,
-        enum:["Open","Resolved","Closed"]
+    status: {
+        type: String,
+        enum: ["Open", "Resolved", "Closed"],
+        default: "Open"
     },
     reply: { 
         type: String 
     },
-},{
-  timestamps: true
+    notified: {
+        type: Boolean,
+        default: false
+    }
+    
+}, {
+    timestamps: true
 });
+
 
 module.exports = mongoose.model("inquiry",inquirySchema);
