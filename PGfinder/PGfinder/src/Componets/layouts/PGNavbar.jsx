@@ -30,8 +30,7 @@ const PGNavbar = () => {
         {/* 🔹 Favorites Link */}
         <Link to="/" style={iconStyle}>HOME</Link>
 
-        {/* 🔹 Notifications Link */}
-        <Link to="/pglayout/contactpage" style={iconStyle}>Contact</Link>
+       
 
         {/* 🔹 Signup Button Only (Login Removed) */}
         <Link to="/logout" style={signupButtonStyle}>LOGOUT</Link>
