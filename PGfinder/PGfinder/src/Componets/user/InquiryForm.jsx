@@ -3,13 +3,16 @@ import axios from "axios";
 
 const InquiryForm = () => {
   const [properties, setProperties] = useState([]);
+
+  const userId = localStorage.getItem("id"); // ✅ Get userId from localStorage
+
   const [formData, setFormData] = useState({
     userName: "",
     email: "",
     phone: "",
     message: "",
     propertyId: "",
-    inquiryDate: new Date().toISOString().slice(0, 10), // current date
+    inquiryDate: new Date().toISOString().slice(0, 10),
   });
 
   useEffect(() => {
@@ -35,8 +38,20 @@ const InquiryForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!userId) {
+      alert("Please login to submit an inquiry.");
+      return;
+    }
+
+    const dataToSend = {
+      ...formData,
+      userId: userId, // ✅ Include userId from localStorage
+    };
+
+    console.log("Submitting Inquiry Data:", dataToSend);
     try {
-      await axios.post("http://localhost:3000/inquiry/add", formData);
+      await axios.post("http://localhost:3000/inquiry/add", dataToSend);
       alert("Inquiry submitted successfully!");
       setFormData({
         userName: "",
