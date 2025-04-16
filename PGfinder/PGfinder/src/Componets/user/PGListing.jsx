@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 const PGListing = () => {
   const [pgs, setPgs] = useState([]);
+  const [filteredPgs, setFilteredPgs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPg, setSelectedPg] = useState(null);
   const [favorites, setFavorites] = useState([]);
+  const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const navigate = useNavigate();
 
   const fetchPgs = async () => {
@@ -16,6 +18,7 @@ const PGListing = () => {
       const res = await axios.get("/property/getallproperties");
       console.log("API Response:", res.data);
       setPgs(res.data.data);
+      setFilteredPgs(res.data.data); // Set filtered PGs initially
     } catch (error) {
       console.error("Error fetching PGs:", error);
     }
@@ -37,6 +40,18 @@ const PGListing = () => {
     navigate(`bookings/${pgId}`); // Navigate to booking page
   };
 
+  // Search functionality
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+    const filtered = pgs.filter((pg) => {
+      return (
+        pg.propertyName.toLowerCase().includes(event.target.value.toLowerCase()) ||
+        pg.address.toLowerCase().includes(event.target.value.toLowerCase())
+      );
+    });
+    setFilteredPgs(filtered);
+  };
+
   useEffect(() => {
     fetchPgs();
     const savedFavs = JSON.parse(localStorage.getItem("favorites")) || [];
@@ -47,25 +62,48 @@ const PGListing = () => {
     <div style={{ textAlign: "center", padding: "20px" }}>
       {isLoading && <CustLoder />}
       <h3 style={{ marginBottom: "20px", fontWeight: "bold" }}>PG LISTINGS</h3>
+      
+      {/* Search Bar */}
+      <div style={{ marginBottom: "20px" }}>
+        <input
+          type="text"
+          placeholder="Search PG by name or address..."
+          value={searchQuery}
+          onChange={handleSearch}
+          style={{
+            padding: "10px",
+            width: "100%",
+            maxWidth: "500px",
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            fontSize: "16px"
+          }}
+        />
+      </div>
+
+      {/* PG Cards */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
           gap: "20px",
+          marginTop: "20px"
         }}
       >
-        {pgs?.map((pg) => (
+        {filteredPgs?.map((pg) => (
           <div
             key={pg._id}
             style={{
-              border: "1px solid #ccc",
+              border: "1px solid #ddd",
               borderRadius: "10px",
               padding: "15px",
               textAlign: "left",
-              boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
-              transition: "transform 0.3s",
+              boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.1)",
+              transition: "transform 0.3s, box-shadow 0.3s",
               cursor: "pointer",
               position: "relative",
+              backgroundColor: "#fff",
+              overflow: "hidden",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
             onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
@@ -73,7 +111,7 @@ const PGListing = () => {
             <img
               style={{
                 width: "100%",
-                height: "150px",
+                height: "200px",
                 borderRadius: "10px",
                 objectFit: "cover",
               }}
@@ -90,14 +128,15 @@ const PGListing = () => {
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
               <button
                 style={{
-                  padding: "8px 10px",
+                  padding: "10px 15px",
                   backgroundColor: "#007bff",
                   color: "white",
                   border: "none",
                   borderRadius: "5px",
                   cursor: "pointer",
                   flex: 1,
-                  marginRight: "5px"
+                  marginRight: "5px",
+                  fontSize: "14px",
                 }}
                 onClick={() => setSelectedPg(pg)}
               >
@@ -105,13 +144,14 @@ const PGListing = () => {
               </button>
               <button
                 style={{
-                  padding: "8px 10px",
+                  padding: "10px 15px",
                   backgroundColor: "#28a745",
                   color: "white",
                   border: "none",
                   borderRadius: "5px",
                   cursor: "pointer",
                   flex: 1,
+                  fontSize: "14px",
                 }}
                 onClick={() => handleBooking(pg._id)}
               >
@@ -126,19 +166,20 @@ const PGListing = () => {
                 position: "absolute",
                 top: 10,
                 right: 10,
-                fontSize: "22px",
+                fontSize: "24px",
                 cursor: "pointer",
-                transition: "transform 0.2s ease",
+                transition: "transform 0.3s",
               }}
               onMouseDown={(e) => (e.currentTarget.style.transform = "scale(1.3)")}
-              onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}>
+              onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
               {favorites.some((fav) => fav._id === pg._id) ? "❤️" : "🤍"}
             </span>
           </div>
         ))}
       </div>
 
-      {/* ✅ PG Details Modal */}
+      {/* PG Details Modal */}
       {selectedPg && (
         <div
           style={{
@@ -189,7 +230,7 @@ const PGListing = () => {
 
             <button
               style={{
-                padding: "8px 15px",
+                padding: "10px 15px",
                 backgroundColor: "#dc3545",
                 color: "white",
                 border: "none",
